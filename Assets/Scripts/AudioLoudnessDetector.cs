@@ -5,8 +5,11 @@ using UnityEngine;
 public class AudioLoudnessDetector : MonoBehaviour
 {
     public static AudioLoudnessDetector Instance { get; private set; }
+    public float baseLevel { get; private set; }
+
     [SerializeField] private int sampleWindow = 64;
     private AudioClip microphoneClip;
+
     private void Awake()
     {
         if(Instance == null)
@@ -18,12 +21,7 @@ public class AudioLoudnessDetector : MonoBehaviour
     void Start()
     {
         MicrophoneToAudioClip();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        StartCoroutine(CalibrateBase(3f));
     }
 
     public void MicrophoneToAudioClip()
@@ -51,5 +49,24 @@ public class AudioLoudnessDetector : MonoBehaviour
             totalLoudness += Mathf.Abs(wave);
         }
         return totalLoudness/sampleWindow;
+    }
+
+    public IEnumerator CalibrateBase(float timeLimit)
+    {
+        baseLevel = 0;
+        float start = Time.time;
+        List<float> loudnessTimeStamps = new List<float>();
+        while (Time.time < start + timeLimit)
+        {
+            loudnessTimeStamps.Add(GetLoudnessFromMic());
+            yield return null;
+        }
+        float totalLoudness = 0;
+        foreach(float s in loudnessTimeStamps)
+        {
+            totalLoudness += s;
+        }
+        baseLevel = totalLoudness/loudnessTimeStamps.Count;
+        Debug.Log(baseLevel);
     }
 }

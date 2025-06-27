@@ -241,11 +241,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68c92a99a66dbde4d87f74957c82708a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  detector: {fileID: 1060475062}
   minScale: {x: 1, y: 1, z: 1}
   maxScale: {x: 10, y: 10, z: 10}
-  threshold: 0.1
-  sensitivity: 5
+  threshold: 0.5
+  sensitivity: 2
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0

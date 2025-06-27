@@ -12,11 +12,15 @@ public class ScaleFromAudio : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float loudness = AudioLoudnessDetector.Instance.GetLoudnessFromMic()*sensitivity;
-        Debug.Log(loudness);
-        if (threshold > loudness)
-            loudness = 0f;
-            
-        this.transform.localScale = Vector3.Lerp(minScale, maxScale, loudness);   
+        if (AudioLoudnessDetector.Instance.baseLevel > 0)
+        {
+            float loudness = AudioLoudnessDetector.Instance.GetLoudnessFromMic() * sensitivity;
+            loudness -= AudioLoudnessDetector.Instance.baseLevel * sensitivity;
+            Debug.Log(loudness);
+            if (threshold > loudness)
+                loudness = 0f;
+
+            this.transform.localScale = Vector3.Lerp(minScale, maxScale, loudness);
+        }
     }
 }
