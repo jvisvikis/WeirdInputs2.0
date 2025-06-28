@@ -1,6 +1,7 @@
 using Cinemachine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -29,11 +30,15 @@ public class CameraSwitchPriority : MonoBehaviour
         vcam1Active = !vcam1Active;
         if (vcam1Active)
         {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.Confined;
             vcam1.Priority = 1;
             vcam2.Priority = 0;
         }
         else
         {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
             vcam1.Priority = 0;
             vcam2.Priority = 1;
         }
