@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8139640830459040922}
   - component: {fileID: 9043399248737789721}
   - component: {fileID: 4154280065831048735}
+  - component: {fileID: 3633783338823365477}
   m_Layer: 5
   m_Name: Word ReCAPTCHA
   m_TagString: Untagged
@@ -80,6 +81,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3633783338823365477
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1425559959079849455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bac724db16123a4689d909a6cbfa67e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wordCapTCHA: W3iR4
+  wordCapTCHAInputField: {fileID: 128425021863101314}
 --- !u!1 &2353048443268630443
 GameObject:
   m_ObjectHideFlags: 0
@@ -742,7 +757,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: ScreenManager, Assembly-CSharp
-        m_MethodName: NextWindow
+        m_MethodName: SubmitAnswer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

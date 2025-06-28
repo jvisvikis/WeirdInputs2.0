@@ -9,17 +9,18 @@ public class FakeLoading : Window
     [SerializeField] private Slider slider;
     [SerializeField] private float timeLimit;
     // Start is called before the first frame update
-    void Start()
+    void OnEnable ()
     {
         StartCoroutine(fakeLoad());
     }
 
     private IEnumerator fakeLoad()
     {
-        float start = Time.time;
-        while(Time.time < start + timeLimit)
+        float start = 0;
+        while(start<=timeLimit)
         {
-            slider.value = Time.time/(start+timeLimit);
+            slider.value = start/timeLimit;
+            start += Time.deltaTime;
             yield return null;
         }
         //finish

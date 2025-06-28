@@ -54,6 +54,15 @@ public class ScreenManager : MonoBehaviour
         windows[windowIdx].gameObject.SetActive(true);
     }
 
+    public void FinishLoad()
+    {
+        if(currentIteration < correctIterationsNum)
+        {
+            currentIteration++;
+            NextWindow();
+        }
+    }
+
     private void Reset()
     {
         currentIteration = 0;

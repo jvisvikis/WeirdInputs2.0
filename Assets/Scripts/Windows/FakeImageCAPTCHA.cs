@@ -13,7 +13,11 @@ public class FakeImageCAPTCHA : Window
     // Start is called before the first frame update
     void Start()
     {
+        ResetGreenSquares();
+    }
 
+    private void ResetGreenSquares()
+    {
         List<int> numbers = new List<int>();
         for (int i = 0; i < squares.Count; i++)
         {
@@ -21,7 +25,7 @@ public class FakeImageCAPTCHA : Window
         }
 
         greenList = new List<int>();
-        for (int i = 0; i<3; i++)
+        for (int i = 0; i < 3; i++)
         {
             int num = Random.Range(0, numbers.Count);
             greenList.Add(numbers[num]);
@@ -30,7 +34,7 @@ public class FakeImageCAPTCHA : Window
         foreach (Toggle toggle in squares)
         {
             toggle.isOn = false;
-            
+
             if (greenList.Contains(squares.IndexOf(toggle)))
                 toggle.transform.GetChild(0).GetComponent<Image>().color = Color.green;
             else
@@ -50,8 +54,10 @@ public class FakeImageCAPTCHA : Window
             if (squares[i].isOn && greenList.Contains(i))
             {
                 greenCount++;
+                squares[i].isOn = false;
             }
         }
+        ResetGreenSquares();
         return greenCount == 3;
     }
 }
