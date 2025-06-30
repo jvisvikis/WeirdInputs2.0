@@ -138,6 +138,7 @@ MonoBehaviour:
   circleRad: 0.5
   segmentDistance: 1
   head: {fileID: 1498194772882544512}
+  tail: {fileID: 1444096746049739031}
 --- !u!54 &6442624396318821127
 Rigidbody:
   m_ObjectHideFlags: 0
