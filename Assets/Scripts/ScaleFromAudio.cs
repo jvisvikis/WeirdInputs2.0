@@ -16,7 +16,7 @@ public class ScaleFromAudio : MonoBehaviour
         {
             float loudness = AudioLoudnessDetector.Instance.GetLoudnessFromMic() * sensitivity;
             loudness -= AudioLoudnessDetector.Instance.baseLevel * sensitivity;
-            //Debug.Log(loudness);
+            Debug.Log(loudness);
             if (threshold > loudness)
                 loudness = 0f;
 

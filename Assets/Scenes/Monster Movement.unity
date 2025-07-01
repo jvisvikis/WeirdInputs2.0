@@ -742,6 +742,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7691434100499139314, guid: bf9d05258cde3894781bec898c68414a,
         type: 3}
+      propertyPath: threshold
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691434100499139314, guid: bf9d05258cde3894781bec898c68414a,
+        type: 3}
+      propertyPath: sensitivity
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7691434100499139314, guid: bf9d05258cde3894781bec898c68414a,
+        type: 3}
       propertyPath: points.Array.data[0]
       value: 
       objectReference: {fileID: 438526684}

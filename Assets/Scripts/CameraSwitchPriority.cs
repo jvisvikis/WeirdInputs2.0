@@ -27,6 +27,7 @@ public class CameraSwitchPriority : MonoBehaviour
 
     public void SwitchCamera(InputAction.CallbackContext ctx)
     {
+
         vcam1Active = !vcam1Active;
         if (vcam1Active)
         {

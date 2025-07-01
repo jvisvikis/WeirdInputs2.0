@@ -11,20 +11,28 @@ public class Monster : MonoBehaviour
     [SerializeField] private float angularSpeed;
     [SerializeField] private float circleRad;
     [SerializeField] private float segmentDistance;
+    [SerializeField] private float threshold;
+    [SerializeField] private float sensitivity;
     [SerializeField] private CentipideSegment head;
     [SerializeField] private CentipideSegment tail;
     private int pointIdx;
+    private int oldPointIdx;
     private float currentAngle;
     private bool isReversing;
 
-    private void Start()
-    {
-        //ToggleReverse();
-    }
-
     void Update()
     {
-
+        if (GameManager.Instance != null && !GameManager.Instance.gameStarted)
+            return;
+        
+        if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic() * sensitivity >= threshold && !isReversing)
+        {
+            ToggleReverse();
+        }
+        else if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic()*sensitivity < threshold && isReversing)
+        {
+            ToggleReverse();
+        }
         CentipideSegment current = isReversing? tail.previous:head.next;
         
         while (current != null)
@@ -48,10 +56,15 @@ public class Monster : MonoBehaviour
         }
         else
             tail.transform.position = this.transform.position;
+
+        head.transform.LookAt(Camera.main.transform);
     }
 
     void FixedUpdate()
     {
+        if (GameManager.Instance != null && !GameManager.Instance.gameStarted)
+            return;
+
         Vector3 point = points[pointIdx].transform.position;
         rb.velocity = (point-this.transform.position).normalized * speed;
     }
@@ -59,25 +72,28 @@ public class Monster : MonoBehaviour
     public void ToggleReverse()
     {
         isReversing = !isReversing;
+
         if (isReversing)
         {
             rb.position = tail.transform.position;
-            pointIdx-= 2;
+            oldPointIdx = pointIdx;
+            pointIdx = 0;
         }
         else
         {
             rb.position = head.transform.position;
-            pointIdx+= 2;
+            pointIdx = oldPointIdx;
         }
     }
 
     private void OnTriggerEnter(Collider collision)
     {
         Debug.Log(collision);
-        if(!isReversing && ++pointIdx >= points.Count)
-            ToggleReverse();
-        else if(isReversing && --pointIdx < 0)
-            ToggleReverse();
+        if (!isReversing && ++pointIdx >= points.Count)
+            pointIdx = points.Count-1;
+        //endgame
+        else if (isReversing && --pointIdx < 0)
+            pointIdx = 0;
     }
 
     void SetSegment(CentipideSegment current, CentipideSegment other)

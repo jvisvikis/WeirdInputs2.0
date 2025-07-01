@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class AudioLoudnessDetector : MonoBehaviour
@@ -8,6 +9,7 @@ public class AudioLoudnessDetector : MonoBehaviour
     public float baseLevel { get; private set; }
 
     [SerializeField] private int sampleWindow = 64;
+    [SerializeField] private TextMeshProUGUI timerText;
     private AudioClip microphoneClip;
 
     private void Awake()
@@ -21,7 +23,6 @@ public class AudioLoudnessDetector : MonoBehaviour
     void Start()
     {
         MicrophoneToAudioClip();
-        StartCoroutine(CalibrateBase(3f));
     }
 
     public void MicrophoneToAudioClip()
@@ -51,6 +52,11 @@ public class AudioLoudnessDetector : MonoBehaviour
         return totalLoudness/sampleWindow;
     }
 
+    public void Calibrate()
+    {
+        StartCoroutine(CalibrateBase(3));
+    }
+
     public IEnumerator CalibrateBase(float timeLimit)
     {
         baseLevel = 0;
@@ -58,6 +64,8 @@ public class AudioLoudnessDetector : MonoBehaviour
         List<float> loudnessTimeStamps = new List<float>();
         while (Time.time < start + timeLimit)
         {
+            if(timerText != null)
+                timerText.text = ((int)(start + timeLimit - (int)Time.time)).ToString();
             loudnessTimeStamps.Add(GetLoudnessFromMic());
             yield return null;
         }
@@ -67,6 +75,7 @@ public class AudioLoudnessDetector : MonoBehaviour
             totalLoudness += s;
         }
         baseLevel = totalLoudness/loudnessTimeStamps.Count;
-        Debug.Log(baseLevel);
+        if(GameManager.Instance != null)
+            GameManager.Instance.PlayVoiceMessage();
     }
 }

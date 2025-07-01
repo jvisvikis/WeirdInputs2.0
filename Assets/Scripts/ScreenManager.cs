@@ -4,15 +4,19 @@ using UnityEditor.PackageManager.Requests;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 public class ScreenManager : MonoBehaviour
 {
     [SerializeField] private List<Window> windows;
     [SerializeField] private PlayerInput inputActions;
+    [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private int correctIterationsNum;
+    [SerializeField] private int windowTimeLimit;
 
     private int windowIdx;
     private int currentIteration;
+    private float timer;
     private void Awake()
     {
         inputActions = new PlayerInput();
@@ -23,9 +27,25 @@ public class ScreenManager : MonoBehaviour
     void Start()
     {
          foreach(Window window in windows) 
-            window.gameObject.SetActive(false);
-        windows[0].gameObject.SetActive(true);
-            
+            window.gameObject.SetActive(false);            
+    }
+
+    private void Update()
+    {
+        if (windows[windowIdx].IsTimed())
+        { 
+            timerText.gameObject.SetActive(false);
+            timer += Time.deltaTime;
+        }
+        else
+            timerText.gameObject.SetActive(true);
+
+        
+        if(timer > windowTimeLimit )
+        {
+            Reset();
+        }
+        timerText.text = (windowTimeLimit-(int)timer).ToString();
     }
 
     public void SubmitAnswer(InputAction.CallbackContext ctx)
@@ -43,6 +63,7 @@ public class ScreenManager : MonoBehaviour
 
     public void NextWindow()
     {
+        timer = 0;
         windows[windowIdx].gameObject.SetActive(false);
         windows[++windowIdx].gameObject.SetActive(true);
     }
@@ -61,11 +82,22 @@ public class ScreenManager : MonoBehaviour
             currentIteration++;
             NextWindow();
         }
+        else
+        {
+            //Win
+            GoToWindow(windows.Count - 1);
+        }
+    }
+
+    public void LoadFirstWindow()
+    {
+        windows[windowIdx].gameObject.SetActive(true) ;
     }
 
     private void Reset()
     {
         currentIteration = 0;
+        timer = 0;
         if(windowIdx < 3)
             GoToWindow(0);
         else

@@ -24,7 +24,7 @@ public class FakeLoading : Window
             yield return null;
         }
         //finish
-        screenManager.NextWindow();
+        screenManager.FinishLoad();
     }
 
     public override bool CheckAnswer()
