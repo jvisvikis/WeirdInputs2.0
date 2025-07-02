@@ -34,11 +34,11 @@ public class ScreenManager : MonoBehaviour
     {
         if (windows[windowIdx].IsTimed())
         { 
-            timerText.gameObject.SetActive(false);
+            timerText.gameObject.SetActive(true);
             timer += Time.deltaTime;
         }
         else
-            timerText.gameObject.SetActive(true);
+            timerText.gameObject.SetActive(false);
 
         
         if(timer > windowTimeLimit )
@@ -86,6 +86,10 @@ public class ScreenManager : MonoBehaviour
         {
             //Win
             GoToWindow(windows.Count - 1);
+            if(GameManager.Instance != null)
+            {
+                GameManager.Instance.GameWon();
+            }
         }
     }
 

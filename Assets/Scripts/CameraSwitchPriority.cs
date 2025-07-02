@@ -1,4 +1,5 @@
 using Cinemachine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -11,7 +12,9 @@ public class CameraSwitchPriority : MonoBehaviour
     [SerializeField] private CinemachineVirtualCamera vcam1;
     [SerializeField] private CinemachineVirtualCamera vcam2;
 
-    private bool vcam1Active = true;
+    public bool vcam1Active = true;
+
+    public static event Action<CameraSwitchPriority> OnSwitch;
 
     void Awake()
     {
@@ -43,5 +46,7 @@ public class CameraSwitchPriority : MonoBehaviour
             vcam1.Priority = 0;
             vcam2.Priority = 1;
         }
+        if (OnSwitch != null)
+            OnSwitch(this);
     }
 }

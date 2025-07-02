@@ -6,6 +6,11 @@ public class CentipideSegment : MonoBehaviour
 {
     public CentipideSegment next;
     public CentipideSegment previous;
-    // Update is called once per frame
-    
+    public Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
+
 }

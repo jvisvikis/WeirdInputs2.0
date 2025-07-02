@@ -40,6 +40,11 @@ public class GameManager : MonoBehaviour
         if(sm != null )
             sm.LoadFirstWindow();
     }
+
+    public void GameWon()
+    {
+        gameWon = true;
+    }
     
 
 }
