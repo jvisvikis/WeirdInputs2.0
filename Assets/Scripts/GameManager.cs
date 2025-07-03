@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     [SerializeField] private GameObject calibrationPanel;
+    [SerializeField] private GameObject losePanel;
     [SerializeField] private AudioSource voiceMessage;
     public bool gameStarted {  get; private set; }
     public bool gameWon { get; set; }
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
             Instance = this;
         else
             Destroy(this.gameObject);
+        losePanel.SetActive(false);
     }
 
     public void PlayVoiceMessage()
@@ -44,6 +47,18 @@ public class GameManager : MonoBehaviour
     public void GameWon()
     {
         gameWon = true;
+    }
+
+    public void GameLost()
+    {
+        gameOver = true;
+        losePanel.SetActive(true);
+    }
+
+    public void ReloadScene()
+    {
+        string currentSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.LoadScene(currentSceneName);
     }
     
 

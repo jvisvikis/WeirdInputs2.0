@@ -23,6 +23,17 @@ public class CameraSwitchPriority : MonoBehaviour
         inputActions.Player.SwitchCamera.performed += SwitchCamera;
     }
 
+    private void Update()
+    {
+        if(GameManager.Instance.gameWon)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            vcam1.Priority = 0;
+            vcam2.Priority = 1;
+        }
+    }
+
     private void OnDisable()
     {
         inputActions.Disable();
@@ -49,4 +60,6 @@ public class CameraSwitchPriority : MonoBehaviour
         if (OnSwitch != null)
             OnSwitch(this);
     }
+
+    
 }

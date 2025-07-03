@@ -29,54 +29,6 @@ public class Monster : MonoBehaviour
     {
         CameraSwitchPriority.OnSwitch += SetCanReverse;
     }
-    void Update()
-    {
-        if (GameManager.Instance != null && !GameManager.Instance.gameStarted)
-            return;
-        
-
-        if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic() * sensitivity >= threshold && !isReversing && canReverse)
-        {
-            ToggleReverse();
-        }
-        else if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic()*sensitivity < threshold && isReversing)
-        {
-            ToggleReverse();
-        }
-        CentipideSegment current = isReversing? tail.previous:head.next;
-        
-        while (current != null)
-        {
-            if(!isReversing && segmentDistance < Vector3.Distance(current.transform.localPosition, current.previous.transform.localPosition))
-            {
-                SetSegment(current, current.previous);
-            }
-            else if(isReversing && segmentDistance < Vector3.Distance(current.transform.localPosition, current.next.transform.localPosition))
-            {
-                SetSegment(current, current.next);
-            }
-            
-            current = isReversing? current.previous : current.next;
-        }
-        if (GameManager.Instance != null && !GameManager.Instance.gameWon)
-        {
-            if (!isReversing)
-            {
-                currentAngle += angularSpeed * Time.deltaTime;
-                Vector3 offset = new Vector2(Mathf.Sin(currentAngle), Mathf.Cos(currentAngle)) * circleRad;
-                head.transform.position = Vector3.MoveTowards(head.transform.position, this.transform.position + offset, Time.deltaTime * speed * 2);
-            }
-            else
-                tail.transform.position = this.transform.position;
-            head.transform.LookAt(Camera.main.transform);
-        }
-        else
-        {
-            head.transform.position = this.transform.position;
-        }
-
-        
-    }
 
     private void FixedUpdate()
     {
@@ -87,8 +39,54 @@ public class Monster : MonoBehaviour
             rb.useGravity = true;
             return;
         }
+
+        //if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic() * sensitivity >= threshold && !isReversing && canReverse)
+        //{
+        //    ToggleReverse();
+        //}
+        //else if (AudioLoudnessDetector.Instance != null && AudioLoudnessDetector.Instance.GetLoudnessFromMic()*sensitivity < threshold && isReversing)
+        //{
+        //    ToggleReverse();
+        //}
+        CentipideSegment current = isReversing ? tail.previous : head.next;
+        while (current != null)
+        {
+
+            if (!isReversing && segmentDistance < Vector3.Distance(current.rb.position, current.previous.rb.position))
+            {
+                SetSegment(current, current.previous);
+            }
+            else if (isReversing && segmentDistance < Vector3.Distance(current.rb.position, current.next.rb.position))
+            {
+                SetSegment(current, current.next);
+            }
+
+            current = isReversing ? current.previous : current.next;
+        }
+        if (GameManager.Instance == null || (GameManager.Instance != null && !GameManager.Instance.gameWon))
+        {
+            if (!isReversing)
+            {
+                currentAngle += angularSpeed * Time.deltaTime;
+                Vector3 offset = new Vector2(Mathf.Sin(currentAngle), Mathf.Cos(currentAngle)) * circleRad;
+                head.rb.position = Vector3.MoveTowards(head.rb.position, rb.position + offset, Time.deltaTime * speed * 2);
+            }
+            else
+                tail.rb.position = rb.position;
+            head.transform.LookAt(Camera.main.transform);
+        }
+        else
+        {
+            head.transform.position = rb.position;
+        }
         Vector3 point = points[pointIdx].transform.position;
-        rb.velocity = (point-this.transform.position).normalized * speed;
+        rb.velocity = (point - rb.position).normalized * speed;
+
+        if (GameManager.Instance != null && !GameManager.Instance.gameStarted)
+            return;
+
+
+
     }
 
     public void ToggleReverse()
@@ -111,23 +109,26 @@ public class Monster : MonoBehaviour
     private void OnTriggerEnter(Collider collision)
     {
         Debug.Log(collision);
-        if (!isReversing && ++pointIdx >= points.Count)
-            pointIdx = points.Count-1;
+        if (collision.gameObject.layer == 6 && !isReversing && ++pointIdx >= points.Count)
+        {
+            pointIdx = points.Count - 1;
+            GameManager.Instance.GameLost();
+        }
         //endgame
-        else if (isReversing && --pointIdx < 0)
+        else if (isReversing)
             pointIdx = 0;
     }
 
     private void SetSegment(CentipideSegment current, CentipideSegment other)
     {
-        float dz = other.transform.localPosition.z - current.transform.localPosition.z;
-        float dx = other.transform.localPosition.x - current.transform.localPosition.x;
+        float dz = other.rb.position.z - current.rb.position.z;
+        float dx = other.rb.position.x - current.rb.position.x;
         float angle = Mathf.Atan2(dx, dz);
-        current.rb.MovePosition(new Vector3(other.transform.localPosition.x - Mathf.Sin(angle) * segmentDistance, current.transform.localPosition.y, other.transform.localPosition.z - Mathf.Cos(angle) * segmentDistance));
-        current.transform.LookAt(other.transform.position);
-        Vector3 dir = current.transform.position - other.transform.position;
+        current.rb.position = new Vector3(other.rb.position.x - Mathf.Sin(angle) * segmentDistance, current.rb.position.y, other.rb.position.z - Mathf.Cos(angle) * segmentDistance);
+        current.transform.LookAt(other.rb.position);
+        Vector3 dir = current.rb.position - other.rb.position;
         dir = dir.normalized * segmentDistance;
-        current.rb.MovePosition(other.transform.position + dir);
+        current.rb.position = other.rb.position + dir;
     }
 
     public void SetCanReverse(CameraSwitchPriority csp)
